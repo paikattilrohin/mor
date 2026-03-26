@@ -29,7 +29,6 @@ struct MorLogoView: View {
 struct PrimaryActionButton: View {
     let title: String
     let action: () -> Void
-    @State private var isPressed = false
 
     var body: some View {
         Button(action: action) {
@@ -37,23 +36,26 @@ struct PrimaryActionButton: View {
                 .font(MorTheme.buttonFont)
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 14)
-                .background(
-                    Capsule()
-                        .fill(isPressed ? MorTheme.buttonBluePressed : MorTheme.buttonBlue)
-                )
-                .overlay(
-                    Capsule()
-                        .stroke(Color.white.opacity(0.9), lineWidth: 1.4)
-                )
-                .shadow(color: MorTheme.buttonBlue.opacity(0.35), radius: 12, y: 8)
         }
-        .buttonStyle(.plain)
-        .simultaneousGesture(
-            DragGesture(minimumDistance: 0)
-                .onChanged { _ in isPressed = true }
-                .onEnded { _ in isPressed = false }
-        )
+        .buttonStyle(MorPrimaryButtonStyle())
+    }
+}
+
+private struct MorPrimaryButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .padding(.vertical, MorTheme.buttonVerticalPadding)
+            .background(
+                Capsule()
+                    .fill(configuration.isPressed ? MorTheme.buttonBluePressed : MorTheme.buttonBlue)
+            )
+            .overlay(
+                Capsule()
+                    .stroke(Color.white.opacity(0.9), lineWidth: 1.4)
+            )
+            .shadow(color: MorTheme.buttonBlue.opacity(0.35), radius: 12, y: 8)
+            .scaleEffect(configuration.isPressed ? 0.98 : 1)
+            .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
     }
 }
 
@@ -64,10 +66,18 @@ struct HeartMeterView: View {
         HStack(spacing: 6) {
             ForEach(0..<3, id: \.self) { index in
                 Image(systemName: "heart.fill")
-                    .font(.system(size: 13, weight: .bold))
+                    .font(.system(size: heartSize, weight: .bold))
                     .foregroundStyle(index < lives ? Color.red : Color.white.opacity(0.88))
             }
         }
+    }
+
+    private var heartSize: CGFloat {
+        #if os(watchOS)
+        return 11
+        #else
+        return 13
+        #endif
     }
 }
 
@@ -86,8 +96,8 @@ struct MorseTrackView: View {
                 )
             }
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 10)
+        .padding(.horizontal, MorTheme.panelPadding)
+        .padding(.vertical, MorTheme.buttonVerticalPadding)
         .frame(maxWidth: .infinity)
         .background(
             RoundedRectangle(cornerRadius: 6, style: .continuous)
@@ -126,8 +136,48 @@ struct MorseChipView: View {
     var body: some View {
         Capsule()
             .fill(color)
-            .frame(width: signal == .dot ? 10 : 24, height: 6)
-            .frame(width: 24, height: 10)
+            .frame(width: signal == .dot ? dotWidth : dashWidth, height: chipHeight)
+            .frame(width: chipFrameWidth, height: chipFrameHeight)
+    }
+
+    private var dotWidth: CGFloat {
+        #if os(watchOS)
+        return 8
+        #else
+        return 10
+        #endif
+    }
+
+    private var dashWidth: CGFloat {
+        #if os(watchOS)
+        return 20
+        #else
+        return 24
+        #endif
+    }
+
+    private var chipHeight: CGFloat {
+        #if os(watchOS)
+        return 5
+        #else
+        return 6
+        #endif
+    }
+
+    private var chipFrameWidth: CGFloat {
+        #if os(watchOS)
+        return 20
+        #else
+        return 24
+        #endif
+    }
+
+    private var chipFrameHeight: CGFloat {
+        #if os(watchOS)
+        return 8
+        #else
+        return 10
+        #endif
     }
 }
 
@@ -138,7 +188,7 @@ struct GameplayCardView: View {
     let feedback: RoundFeedback
 
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: MorTheme.gameplaySpacing) {
             StylizedLetterView(letter: prompt.character)
                 .padding(.top, 8)
 
@@ -149,8 +199,8 @@ struct GameplayCardView: View {
                 feedback: feedback
             )
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 18)
+        .padding(.horizontal, MorTheme.cardHorizontalPadding)
+        .padding(.vertical, MorTheme.cardVerticalPadding)
         .frame(maxWidth: .infinity)
         .background(cardFill)
         .overlay(
@@ -214,7 +264,7 @@ struct MorsePressPad: View {
             .font(MorTheme.buttonFont)
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 14)
+            .padding(.vertical, MorTheme.buttonVerticalPadding)
             .background(
                 Capsule()
                     .fill(isLocked ? MorTheme.buttonBlue.opacity(0.55) : (isPressing ? MorTheme.buttonBluePressed : MorTheme.buttonBlue))
@@ -256,14 +306,14 @@ struct SummaryStatView: View {
     var body: some View {
         VStack(spacing: 2) {
             Text(title)
-                .font(.system(size: 14, weight: .medium, design: .rounded))
+                .font(MorTheme.statTitleFont)
                 .foregroundStyle(Color.white.opacity(0.78))
             Text(value)
-                .font(.system(size: 18, weight: .semibold, design: .rounded))
+                .font(MorTheme.statValueFont)
                 .foregroundStyle(.white)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 10)
+        .padding(.vertical, MorTheme.buttonVerticalPadding)
         .background(
             RoundedRectangle(cornerRadius: 10, style: .continuous)
                 .fill(Color.white.opacity(0.12))
@@ -280,7 +330,7 @@ struct GlassPanel<Content: View>: View {
 
     var body: some View {
         content
-            .padding(14)
+            .padding(MorTheme.panelPadding)
             .background(
                 RoundedRectangle(cornerRadius: MorTheme.largeCornerRadius, style: .continuous)
                     .fill(Color.white.opacity(0.08))

@@ -45,7 +45,7 @@ enum MorTheme {
 
     static var logoFont: Font {
         #if os(watchOS)
-        return .system(size: 34, weight: .heavy, design: .rounded)
+        return .system(size: 30, weight: .heavy, design: .rounded)
         #else
         return .system(size: 56, weight: .heavy, design: .rounded)
         #endif
@@ -61,7 +61,7 @@ enum MorTheme {
 
     static var subtitleFont: Font {
         #if os(watchOS)
-        return .system(size: 16, weight: .medium, design: .rounded)
+        return .system(size: 14, weight: .medium, design: .rounded)
         #else
         return .system(size: 18, weight: .medium, design: .rounded)
         #endif
@@ -69,7 +69,7 @@ enum MorTheme {
 
     static var buttonFont: Font {
         #if os(watchOS)
-        return .system(size: 16, weight: .bold, design: .rounded)
+        return .system(size: 15, weight: .bold, design: .rounded)
         #else
         return .system(size: 22, weight: .bold, design: .rounded)
         #endif
@@ -77,7 +77,7 @@ enum MorTheme {
 
     static var symbolFontSize: CGFloat {
         #if os(watchOS)
-        return 48
+        return 40
         #else
         return 86
         #endif
@@ -85,9 +85,89 @@ enum MorTheme {
 
     static var sectionSpacing: CGFloat {
         #if os(watchOS)
-        return 14
+        return 10
         #else
         return 24
+        #endif
+    }
+
+    static var buttonVerticalPadding: CGFloat {
+        #if os(watchOS)
+        return 10
+        #else
+        return 14
+        #endif
+    }
+
+    static var screenHorizontalPadding: CGFloat {
+        #if os(watchOS)
+        return 10
+        #else
+        return 8
+        #endif
+    }
+
+    static var screenVerticalPadding: CGFloat {
+        #if os(watchOS)
+        return 10
+        #else
+        return 12
+        #endif
+    }
+
+    static var panelPadding: CGFloat {
+        #if os(watchOS)
+        return 10
+        #else
+        return 14
+        #endif
+    }
+
+    static var gameplaySpacing: CGFloat {
+        #if os(watchOS)
+        return 8
+        #else
+        return 14
+        #endif
+    }
+
+    static var cardVerticalPadding: CGFloat {
+        #if os(watchOS)
+        return 8
+        #else
+        return 18
+        #endif
+    }
+
+    static var cardHorizontalPadding: CGFloat {
+        #if os(watchOS)
+        return 8
+        #else
+        return 14
+        #endif
+    }
+
+    static var instructionFont: Font {
+        #if os(watchOS)
+        return .system(size: 13, weight: .medium, design: .rounded)
+        #else
+        return .system(size: 16, weight: .medium, design: .rounded)
+        #endif
+    }
+
+    static var statTitleFont: Font {
+        #if os(watchOS)
+        return .system(size: 12, weight: .medium, design: .rounded)
+        #else
+        return .system(size: 14, weight: .medium, design: .rounded)
+        #endif
+    }
+
+    static var statValueFont: Font {
+        #if os(watchOS)
+        return .system(size: 16, weight: .semibold, design: .rounded)
+        #else
+        return .system(size: 18, weight: .semibold, design: .rounded)
         #endif
     }
 

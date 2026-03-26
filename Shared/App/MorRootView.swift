@@ -70,14 +70,27 @@ private struct MorScreenFrame<Content: View>: View {
     var body: some View {
         GeometryReader { proxy in
             let width = MorTheme.frameWidth(for: proxy.size.width)
+            let minHeight = max(0, proxy.size.height - (MorTheme.screenVerticalPadding * 2))
 
-            VStack {
-                Spacer(minLength: 12)
+            #if os(watchOS)
+            ScrollView(.vertical, showsIndicators: false) {
                 content(width)
-                Spacer(minLength: 12)
+                    .frame(width: width)
+                    .frame(maxWidth: .infinity)
+                    .frame(minHeight: minHeight, alignment: .center)
+                    .padding(.vertical, MorTheme.screenVerticalPadding)
+            }
+            .scrollBounceBehavior(.basedOnSize)
+            .padding(.horizontal, MorTheme.screenHorizontalPadding)
+            #else
+            VStack {
+                Spacer(minLength: MorTheme.screenVerticalPadding)
+                content(width)
+                Spacer(minLength: MorTheme.screenVerticalPadding)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding(.horizontal, 8)
+            .padding(.horizontal, MorTheme.screenHorizontalPadding)
+            #endif
         }
     }
 }
@@ -87,18 +100,15 @@ private struct MorWelcomeScreen: View {
 
     var body: some View {
         MorScreenFrame { width in
-            VStack(spacing: 26) {
-                Spacer(minLength: 0)
-
+            VStack(spacing: MorTheme.sectionSpacing) {
                 MorLogoView()
 
                 Text("Learn Morse Code")
                     .font(MorTheme.subtitleFont)
                     .foregroundStyle(Color.white.opacity(0.92))
 
-                Spacer(minLength: 0)
-
                 PrimaryActionButton(title: "Play", action: onPlay)
+                    .padding(.top, 8)
             }
             .frame(width: width)
         }
@@ -117,19 +127,10 @@ private struct MorHowToPlayScreen: View {
 
                 GlassPanel {
                     VStack(alignment: .leading, spacing: 10) {
-                        HStack(spacing: 6) {
-                            Text("Quick Tap =")
-                            MorseChipView(signal: .dot, color: .white)
-                            Text("Dot")
-                        }
-
-                        HStack(spacing: 6) {
-                            Text("Long Press =")
-                            MorseChipView(signal: .dash, color: .white)
-                            Text("Dash")
-                        }
+                        instructionRow(label: "Quick Tap", signal: .dot, meaning: "Dot")
+                        instructionRow(label: "Long Press", signal: .dash, meaning: "Dash")
                     }
-                    .font(.system(size: 16, weight: .medium, design: .rounded))
+                    .font(MorTheme.instructionFont)
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
@@ -138,6 +139,18 @@ private struct MorHowToPlayScreen: View {
             }
             .frame(width: width)
         }
+    }
+
+    private func instructionRow(label: String, signal: MorseSignal, meaning: String) -> some View {
+        HStack(spacing: 6) {
+            Text(label)
+            Text("=")
+            MorseChipView(signal: signal, color: .white)
+            Text(meaning)
+            Spacer(minLength: 0)
+        }
+        .lineLimit(1)
+        .minimumScaleFactor(0.8)
     }
 }
 
@@ -169,12 +182,12 @@ private struct MorGameplayScreen: View {
 
     var body: some View {
         MorScreenFrame { width in
-            VStack(spacing: 14) {
+            VStack(spacing: MorTheme.gameplaySpacing) {
                 HStack {
                     HeartMeterView(lives: game.lives)
                     Spacer()
                     Text("\(game.score)")
-                        .font(.system(size: 14, weight: .medium, design: .rounded))
+                        .font(MorTheme.instructionFont)
                         .foregroundStyle(Color.white.opacity(0.9))
                 }
 
@@ -208,7 +221,7 @@ private struct MorGameOverScreen: View {
                 GlassPanel {
                     VStack(spacing: 4) {
                         Text(summary.isHighScore ? "New High Score!" : "Final Score")
-                            .font(.system(size: 16, weight: .medium, design: .rounded))
+                            .font(MorTheme.instructionFont)
                             .foregroundStyle(Color.white.opacity(0.78))
 
                         HStack(spacing: 6) {
@@ -218,7 +231,7 @@ private struct MorGameOverScreen: View {
                             }
 
                             Text("\(summary.score)")
-                                .font(.system(size: 24, weight: .bold, design: .rounded))
+                                .font(.system(size: 22, weight: .bold, design: .rounded))
                                 .foregroundStyle(MorTheme.accentBlue)
                         }
                     }
@@ -231,7 +244,7 @@ private struct MorGameOverScreen: View {
                 }
 
                 PrimaryActionButton(title: "Play Again", action: onReplay)
-                    .padding(.top, 14)
+                    .padding(.top, MorTheme.gameplaySpacing)
             }
             .frame(width: width)
         }

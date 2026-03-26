@@ -25,5 +25,5 @@ xcodebuild -project Mor.xcodeproj -scheme Mor -destination 'platform=iOS Simulat
 ## Run on Apple Watch Simulator
 
 ```bash
-xcodebuild -project Mor.xcodeproj -scheme MorWatch -destination 'platform=watchOS Simulator,name=Apple Watch Series 10 (42mm)' build
+xcodebuild -project Mor.xcodeproj -scheme MorWatch -destination 'platform=watchOS Simulator,name=Apple Watch Series 11 (42mm),OS=26.1' build
 ```

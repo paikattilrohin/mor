@@ -1,0 +1,57 @@
+name: Mor
+options:
+  bundleIdPrefix: com.paikattilrohin
+configs:
+  Debug: debug
+  Release: release
+settings:
+  base:
+    CURRENT_PROJECT_VERSION: 1
+    MARKETING_VERSION: 1.0
+    SWIFT_VERSION: 5.0
+    DEVELOPMENT_ASSET_PATHS: "\"\""
+targets:
+  Mor:
+    type: application
+    platform: iOS
+    deploymentTarget: "18.0"
+    sources:
+      - path: Mor/App
+      - path: Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.paikattilrohin.mor
+        PRODUCT_NAME: Mor
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Mor
+        SUPPORTS_MACCATALYST: NO
+        TARGETED_DEVICE_FAMILY: "1,2"
+  MorWatch:
+    type: application
+    platform: watchOS
+    deploymentTarget: "11.0"
+    sources:
+      - path: MorWatch/App
+      - path: Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.paikattilrohin.mor.watch
+        PRODUCT_NAME: Mor
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Mor
+        INFOPLIST_KEY_WKApplication: YES
+        INFOPLIST_KEY_WKWatchOnly: YES
+        TARGETED_DEVICE_FAMILY: "4"
+schemes:
+  Mor:
+    build:
+      targets:
+        Mor: all
+    run:
+      config: Debug
+  MorWatch:
+    build:
+      targets:
+        MorWatch: all
+    run:
+      config: Debug
